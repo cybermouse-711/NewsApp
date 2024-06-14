@@ -6,6 +6,26 @@
 //
 
 import Foundation
+import Combine
+
+struct APIConstants {
+    static let apiKey: String = "d0a4da41d67d421bab953fc058131407"
+    
+    static let jsonDecoder: JSONDecoder = {
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        let dataFormatter = DateFormatter()
+        dataFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        jsonDecoder.dateDecodingStrategy = .formatted(dataFormatter)
+        return jsonDecoder
+    }()
+    
+    static let formatter: DateFormatter = {
+       let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }()
+}
 
 enum Endpoint {
     case topHeadLines
@@ -47,4 +67,30 @@ enum Endpoint {
             return "sources"
         }
     }
+    
+    var absoluteURL: URL? {
+        
+    }
 }
+
+final class NewsAPI {
+    
+    func fetchArticles(from endpoint: Endpoint) -> AnyPublisher<[Article], Never> {
+        guard let url = endpoint.absoluteURL else {
+            return Just([Article]()).eraseToAnyPublisher()
+        }
+        return
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map{$0.data}
+            .decode(type: NewsResponse.self, decoder: TopLevelDecoder)
+            .map{$0.articles}
+            .replaceError(with: [])
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func fetchSources(for country: String) -> AnyPublisher<[Source], Never> {
+        
+    }
+}
+
