@@ -21,7 +21,7 @@ struct APIConstants {
     }()
     
     static let formatter: DateFormatter = {
-       let formatter = DateFormatter()
+        let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter
     }()
@@ -35,23 +35,6 @@ enum Endpoint {
     case sources(country: String)
     
     var baseURL: URL? { URL(string: "https://newsapi.org/v2/") ?? nil }
-    
-    init? (index: Int, text: String = "sports")  {
-        switch index {
-        case 0:
-            self = .topHeadLines
-        case 1:
-            self = .search(searchFilter: text)
-        case 2:
-            self = .articlesFromCategory(text)
-        case 3:
-            self = .articlesFromSource(text)
-        case 4:
-            self = .sources(country: text)
-        default:
-            return nil
-        }
-    }
     
     func path() -> String {
         switch self {
@@ -69,7 +52,79 @@ enum Endpoint {
     }
     
     var absoluteURL: URL? {
+        guard let url = baseURL?.appendingPathComponent(self.path()) else { return nil }
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        guard var urlComponents = components else { return nil }
         
+        switch self {
+        case .topHeadLines:
+            urlComponents.queryItems = [URLQueryItem(name: "country", value: region),
+                                        URLQueryItem(name: "apikey", value: APIConstants.apiKey)
+                                       ]
+        case .articlesFromCategory(let category):
+            urlComponents.queryItems = [URLQueryItem(name: "country", value: region),
+                                        URLQueryItem(name: "category", value: category),
+                                        URLQueryItem(name: "apikey", value: APIConstants.apiKey)
+                                        ]
+        case .sources (let country):
+            urlComponents.queryItems = [URLQueryItem(name: "country", value: country),
+                                        URLQueryItem(name: "language", value: countryLang[country]),
+                                        URLQueryItem(name: "apikey", value: APIConstants.apiKey)
+                                       ]
+        case .articlesFromSource (let source):
+            urlComponents.queryItems = [URLQueryItem(name: "sources", value: source),
+                                        URLQueryItem(name: "apikey", value: APIConstants.apiKey)
+                                       ]
+        case .search (let searchFilter):
+            urlComponents.queryItems = [URLQueryItem(name: "q", value: searchFilter.lowercased()),
+                                        URLQueryItem(name: "apikey", value: APIConstants.apiKey)
+                                      ]
+        }
+        return urlComponents.url
+    }
+    
+    var locale: String {
+        Locale.current.language.languageCode?.identifier ?? "en"
+    }
+    
+    var region: String {
+        Locale.current.region?.identifier.lowercased() ?? "us"
+    }
+    
+    var countryLang : [String: String]  {return [
+      "ar": "es",  // argentina
+      "au": "en",  // australia
+      "br": "es",  // brazil
+      "ca": "en",  // canada
+      "cn": "cn",  // china
+      "de": "de",  // germany
+      "es": "es",  // spain
+      "fr": "fr",  // france
+      "gb": "en",  // unitedKingdom
+      "hk": "cn",  // hongKong
+      "ie": "en",  // ireland
+      "in": "en",  // india
+      "is": "en",  // iceland
+      "il": "he",  // israil for sources - language
+      "it": "it",  // italy
+      "nl": "nl",  // netherlands
+      "no": "no",  // norway
+      "ru": "ru",  // russia
+      "sa": "ar",  // saudiArabia
+      "us": "en",  // unitedStates
+      "za": "en"   // southAfrica
+      ]
+    }
+    
+    init? (index: Int, text: String = "sports")  {
+        switch index {
+        case 0: self = .topHeadLines
+        case 1: self = .search(searchFilter: text)
+        case 2: self = .articlesFromCategory(text)
+        case 3: self = .articlesFromSource(text)
+        case 4: self = .sources(country: text)
+        default: return nil
+        }
     }
 }
 
