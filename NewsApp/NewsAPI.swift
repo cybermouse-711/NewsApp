@@ -146,7 +146,18 @@ final class NewsAPI {
     }
     
     func fetchSources(for country: String) -> AnyPublisher<[Source], Never> {
+        guard let url = Endpoint.sources(country: country).absoluteURL else {
+            return Just([Source]()).eraseToAnyPublisher()
+        }
+        let urlSession = URLSession.shared.dataTaskPublisher(for: url)
+            .map{$0.data}
+            .decode(type: SourceResponse.self, decoder: APIConstants.jsonDecoder)
+            .map{$0.sources}
+            .replaceError(with: [])
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
         
+        return urlSession
     }
 }
 
