@@ -130,30 +130,38 @@ enum Endpoint {
 
 final class NewsAPI {
     
+    // Асинхронная выборка статей
     func fetchArticles(from endpoint: Endpoint) -> AnyPublisher<[Article], Never> {
         guard let url = endpoint.absoluteURL else {
             return Just([Article]()).eraseToAnyPublisher()
         }
-        let urlSession = URLSession.shared.dataTaskPublisher(for: url)
-            .map{$0.data}
-            .decode(type: NewsResponse.self, decoder: APIConstants.jsonDecoder)
-            .map{$0.articles}
-            .replaceError(with: [])
-            .receive(on: RunLoop.main)
-            .eraseToAnyPublisher()
         
-        return urlSession
+        return fetch(url)
+            .map{ (response: NewsResponse) -> [Article] in
+                return response.articles
+            }
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
     }
     
+    // Асинхронная выборка источников информации
     func fetchSources(for country: String) -> AnyPublisher<[Source], Never> {
         guard let url = Endpoint.sources(country: country).absoluteURL else {
             return Just([Source]()).eraseToAnyPublisher()
         }
+        
+        return fetch(url)
+            .map { (response: SourceResponse) -> [Source] in
+                response.sources
+            }
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
+    }
+    
+    private func fetch<T: Decodable>(_ url: URL) -> AnyPublisher<T, Error> {
         let urlSession = URLSession.shared.dataTaskPublisher(for: url)
             .map{$0.data}
-            .decode(type: SourceResponse.self, decoder: APIConstants.jsonDecoder)
-            .map{$0.sources}
-            .replaceError(with: [])
+            .decode(type: T.self, decoder: APIConstants.jsonDecoder)
             .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
         
