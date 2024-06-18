@@ -129,6 +129,7 @@ enum Endpoint {
 }
 
 final class NewsAPI {
+    static let shared = NewsAPI()
     
     // Асинхронная выборка статей
     func fetchArticles(from endpoint: Endpoint) -> AnyPublisher<[Article], Never> {
