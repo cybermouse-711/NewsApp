@@ -21,10 +21,10 @@ struct APIConstants {
     }()
     
     static let formatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter
-    }()
+       let formatter = DateFormatter()
+       formatter.dateStyle = .medium
+       return formatter
+   }()
 }
 
 enum Endpoint {
