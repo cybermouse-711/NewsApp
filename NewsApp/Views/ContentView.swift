@@ -22,6 +22,7 @@ struct ContentView: View {
             if articlesViewModel.indexEndpoint == 1 {
                 SearchView(searchTerm: self.$articlesViewModel.searchString)
             }
+            
             if articlesViewModel.indexEndpoint == 2 {
                                   Picker("", selection: $articlesViewModel.searchString){
                                       Text("sports").tag("sports")
@@ -35,6 +36,7 @@ struct ContentView: View {
                                   })
                                   .pickerStyle(SegmentedPickerStyle())
                        }
+            
             ArticlesList(articles: articlesViewModel.articles)
         }
     }

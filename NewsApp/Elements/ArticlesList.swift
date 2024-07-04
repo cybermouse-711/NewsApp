@@ -23,19 +23,16 @@ struct ArticlesList: View {
                         Text("\(article.source.name != nil ? article.source.name! : "")")
                         Spacer()
                         Text(APIConstants.formatter.string(from: article.publishedAt!))
-                    }
-                    .foregroundColor(.blue)
+                    }.foregroundColor(.blue)
                     ArticleImage(imageLoader: ImageLoaderCache.shared.loaderFor(article: article))
-                    Text("\(article.description != nil ? article.description! : "")")
-                        .lineLimit(12)
+                    Text("\(article.description != nil ? article.description! : "")").lineLimit(12)
                     Button(
                         action: {
                             self.articleURL = URL(string: article.url!)
                             self.shouldPresent = true
                         },
                         label: {
-                            Text("\(article.url != nil ? "Read" : "")")
-                                .foregroundColor(.blue)
+                            Text("\(article.url != nil ? "Read" : "")").foregroundColor(.blue)
                         }
                     )
                     Divider()
@@ -48,7 +45,6 @@ struct ArticlesList: View {
     }
 }
 
-
 let calendar = Calendar.current
 let components1 = DateComponents(calendar: calendar, year: 2024, month: 5, day: 23)
 let sampleArticle1 = Article (
@@ -59,6 +55,7 @@ let sampleArticle1 = Article (
     publishedAt: calendar.date(from: components1)!, source:
                                 Source(id: "the-verge", name: "the-verge", description: "", country: "us", category: "general", url: "https://cdn.vox-cdn.com"),
     url: "null")
+
 struct ArticlesList_Previews: PreviewProvider {
     static var previews: some View {
         ArticlesList(articles: [sampleArticle1])

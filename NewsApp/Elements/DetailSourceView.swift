@@ -12,7 +12,7 @@ struct DetailSourceView: View {
     @State var shouldPresent = false
     @State var sourceURL: URL?
     
-    private var source: Source
+    var source: Source
     
     var body: some View {
         VStack {
@@ -32,11 +32,9 @@ struct DetailSourceView: View {
                     self.shouldPresent = true
                 },
                 label: {
-                    Text(source.url != nil ? source.url! : "")
-                        .foregroundColor(.blue)
+                    Text(source.url != nil ? source.url! : "").foregroundColor(.blue)
                 }
             )
-            
             Spacer()
             ZStack {
                 Color.gray
@@ -51,7 +49,7 @@ struct DetailSourceView: View {
             SafariView(url: self.sourceURL!)
         }
         .padding(10)
-        .navigationTitle(Text(source.id!))
+        .navigationBarTitle(Text(source.id!))
     }
 }
 
