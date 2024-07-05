@@ -131,6 +131,8 @@ enum Endpoint {
 final class NewsAPI {
     static let shared = NewsAPI()
     
+    private var subscritions = Set<AnyCancellable>()
+    
     // Асинхронная выборка статей
     func fetchArticles(from endpoint: Endpoint) -> AnyPublisher<[Article], Never> {
         guard let url = endpoint.absoluteURL else {
@@ -158,6 +160,49 @@ final class NewsAPI {
             .replaceError(with: [])
             .eraseToAnyPublisher()
     }
+    
+    // Асинхронная  выборка статей  с сообщением об ошибке
+    func fetchArticlesError(from endpoint: Endpoint) -> AnyPublisher<[Article], NewsError> {
+        return Future<[Article], NewsError> { [unowned self] promise in
+            guard let url = endpoint.absoluteURL else {
+                return promise(.failure(.urlError(URLError(.unsupportedURL))))
+            }
+            
+            URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { (data, response) -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                        throw NewsError.responseError(
+                            ((response as? HTTPURLResponse)?.statusCode ?? 500,
+                             String(data: data, encoding: .utf8) ?? "")
+                        )
+                    }
+                    return data
+                }
+                .decode(type: NewsResponse.self, decoder: APIConstants.jsonDecoder)
+                .receive(on: RunLoop.main)
+                .sink(
+                    receiveCompletion: { completion in
+                        if case let .failure(error) = completion {
+                            switch error {
+                            case let urlError as URLError:
+                                promise(.failure(.urlError(urlError)))
+                            case let decodingError as DecodingError:
+                                promise(.failure(.decodingError(decodingError)))
+                            case let apiError as NewsError:
+                                promise(.failure(apiError))
+                            default:
+                                promise(.failure(.genericError))
+                            }
+                        }
+                    },
+                    receiveValue: { promise(.success($0.articles)) }
+                )
+                .store(in: &self.subscritions)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    
     
     private func fetch<T: Decodable>(_ url: URL) -> AnyPublisher<T, Error> {
         let urlSession = URLSession.shared.dataTaskPublisher(for: url)
