@@ -168,18 +168,10 @@ final class NewsAPI {
                 return promise(.failure(.urlError(URLError(.unsupportedURL))))
             }
             
-            URLSession.shared.dataTaskPublisher(for: url)
-                .tryMap { (data, response) -> Data in
-                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
-                        throw NewsError.responseError(
-                            ((response as? HTTPURLResponse)?.statusCode ?? 500,
-                             String(data: data, encoding: .utf8) ?? "")
-                        )
-                    }
-                    return data
+            self.fetchError(url)
+                .tryMap { (result: NewsResponse) -> [Article] in
+                    result.articles
                 }
-                .decode(type: NewsResponse.self, decoder: APIConstants.jsonDecoder)
-                .receive(on: RunLoop.main)
                 .sink(
                     receiveCompletion: { completion in
                         if case let .failure(error) = completion {
@@ -195,15 +187,34 @@ final class NewsAPI {
                             }
                         }
                     },
-                    receiveValue: { promise(.success($0.articles)) }
+                    receiveValue: { promise(.success($0)) }
                 )
                 .store(in: &self.subscritions)
         }
         .eraseToAnyPublisher()
     }
     
+    //Асинхронная выборка на основе URL с сообщениями об ошибках
+    private func fetchError<T: Decodable>(_ url: URL) -> AnyPublisher<T, Error> {
+        let urlSession = URLSession.shared.dataTaskPublisher(for: url)
+            .tryMap { (data, response) -> Data in
+                print(String(data: data, encoding: .utf8) ?? "")
+                guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                    throw NewsError.responseError(
+                        ((response as? HTTPURLResponse)?.statusCode ?? 500,
+                        String(data: data, encoding: .utf8) ?? "")
+                    )
+                }
+                return data
+            }
+            .decode(type: T.self, decoder: APIConstants.jsonDecoder)
+            .receive(on: RunLoop.main)
+            .eraseToAnyPublisher()
+        
+        return urlSession
+    }
     
-    
+    //Асинхронная выборка на основе URL
     private func fetch<T: Decodable>(_ url: URL) -> AnyPublisher<T, Error> {
         let urlSession = URLSession.shared.dataTaskPublisher(for: url)
             .map{$0.data}
