@@ -26,6 +26,8 @@
 		C6CF4EF72C36EA04004F3E27 /* SourcesViewModelErr.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF4EF62C36EA04004F3E27 /* SourcesViewModelErr.swift */; };
 		C6CF4EF92C36FDEA004F3E27 /* TabedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF4EF82C36FDEA004F3E27 /* TabedView.swift */; };
 		C6CF4EFB2C36FE6F004F3E27 /* ContentViewArticles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF4EFA2C36FE6F004F3E27 /* ContentViewArticles.swift */; };
+		C6CF4EFD2C382EA7004F3E27 /* NewsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF4EFC2C382EA7004F3E27 /* NewsError.swift */; };
+		C6CF4EFF2C3835B7004F3E27 /* ArticlesViewModelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CF4EFE2C3835B7004F3E27 /* ArticlesViewModelError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,8 @@
 		C6CF4EF62C36EA04004F3E27 /* SourcesViewModelErr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesViewModelErr.swift; sourceTree = "<group>"; };
 		C6CF4EF82C36FDEA004F3E27 /* TabedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabedView.swift; sourceTree = "<group>"; };
 		C6CF4EFA2C36FE6F004F3E27 /* ContentViewArticles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewArticles.swift; sourceTree = "<group>"; };
+		C6CF4EFC2C382EA7004F3E27 /* NewsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsError.swift; sourceTree = "<group>"; };
+		C6CF4EFE2C3835B7004F3E27 /* ArticlesViewModelError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesViewModelError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +79,7 @@
 			children = (
 				C630522D2C247D8E0015481A /* ImageLoader.swift */,
 				C6AEA4CB2C135A3400CCAA35 /* NewsAPI.swift */,
+				C6CF4EFC2C382EA7004F3E27 /* NewsError.swift */,
 			);
 			path = NetworkManager;
 			sourceTree = "<group>";
@@ -82,13 +87,13 @@
 		C6022EFB2C25F8360010FAE0 /* Elements */ = {
 			isa = PBXGroup;
 			children = (
-				C63052292C24774E0015481A /* ArticlesList.swift */,
-				C6022EFE2C25FBCD0010FAE0 /* ArticleImage.swift */,
 				C6CF4EF82C36FDEA004F3E27 /* TabedView.swift */,
 				C6022F002C2602A40010FAE0 /* SafariView.swift */,
 				C6022F022C2607A50010FAE0 /* SearchView.swift */,
-				C6CF4EF22C35DD2F004F3E27 /* SourcesList.swift */,
 				C6CF4EF42C36E025004F3E27 /* DetailSourceView.swift */,
+				C63052292C24774E0015481A /* ArticlesList.swift */,
+				C6CF4EF22C35DD2F004F3E27 /* SourcesList.swift */,
+				C6022EFE2C25FBCD0010FAE0 /* ArticleImage.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -97,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				C64839562C1F6FF800C248EC /* ArticlesViewModel.swift */,
+				C6CF4EFE2C3835B7004F3E27 /* ArticlesViewModelError.swift */,
 				C6CF4EEE2C35D466004F3E27 /* SourcesViewModel.swift */,
 				C6CF4EF62C36EA04004F3E27 /* SourcesViewModelErr.swift */,
 			);
@@ -107,8 +113,8 @@
 			isa = PBXGroup;
 			children = (
 				C6AEA4BD2C134F1200CCAA35 /* ContentView.swift */,
-				C6CF4EF02C35DBB5004F3E27 /* ContentViewSources.swift */,
 				C6CF4EFA2C36FE6F004F3E27 /* ContentViewArticles.swift */,
+				C6CF4EF02C35DBB5004F3E27 /* ContentViewSources.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -223,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6022F032C2607A50010FAE0 /* SearchView.swift in Sources */,
+				C6CF4EFD2C382EA7004F3E27 /* NewsError.swift in Sources */,
 				C6AEA4BE2C134F1200CCAA35 /* ContentView.swift in Sources */,
 				C64839572C1F6FF800C248EC /* ArticlesViewModel.swift in Sources */,
 				C630522A2C24774E0015481A /* ArticlesList.swift in Sources */,
@@ -234,6 +241,7 @@
 				C6CF4EF32C35DD2F004F3E27 /* SourcesList.swift in Sources */,
 				C6022EFF2C25FBCD0010FAE0 /* ArticleImage.swift in Sources */,
 				C6CF4EEF2C35D466004F3E27 /* SourcesViewModel.swift in Sources */,
+				C6CF4EFF2C3835B7004F3E27 /* ArticlesViewModelError.swift in Sources */,
 				C6AEA4BC2C134F1200CCAA35 /* NewsAppApp.swift in Sources */,
 				C6CF4EF12C35DBB5004F3E27 /* ContentViewSources.swift in Sources */,
 				C6AEA4CC2C135A3400CCAA35 /* NewsAPI.swift in Sources */,
