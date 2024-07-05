@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ContentViewSources: View {
-    @ObservedObject var sourcesViewModelErr = SourcesViewModelErr()
+    @ObservedObject var sourcesViewModelError = SourcesViewModelError()
     
     var body: some View {
         NavigationView {
             VStack {
-                SearchView(searchTerm: self.$sourcesViewModelErr.searchString)
-                Picker("", selection: self.$sourcesViewModelErr.country){
+                SearchView(searchTerm: self.$sourcesViewModelError.searchString)
+                Picker("", selection: self.$sourcesViewModelError.country){
                     Text("us").tag("us")
                     Text("gb").tag("gb")
                     Text("ca").tag("ca")
@@ -28,10 +28,10 @@ struct ContentViewSources: View {
                 .font(.headline)
                 .pickerStyle(SegmentedPickerStyle())
                 
-                SourcesList(sources: sourcesViewModelErr.sources)
+                SourcesList(sources: sourcesViewModelError.sources)
             }
         }
-        .alert(item: self.$sourcesViewModelErr.sourcesError) { error in
+        .alert(item: self.$sourcesViewModelError.sourcesError) { error in
             Alert(
                 title: Text("Network error"),
                 message: Text(error.localizedDescription).font(.subheadline),

@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 final class ArticlesViewModelError: ObservableObject {
-    var newsAPI = NewsAPI.shared
     
     @Published var indexEndpoint = 0
     @Published var searchString = "sports"
@@ -17,6 +16,7 @@ final class ArticlesViewModelError: ObservableObject {
     @Published var articlesError: NewsError?
     
     private var cancellableSet: Set<AnyCancellable> = []
+    private var newsAPI = NewsAPI.shared
     
     private var validString: AnyPublisher<String, Never> {
         $searchString
