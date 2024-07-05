@@ -55,6 +55,6 @@ struct DetailSourceView: View {
 
 struct DetailSourceView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailSourceView(source: sampleSource1, articlesViewModel:  ArticlesViewModel(index: 3, text: "abc-news"))
+        DetailSourceView(articlesViewModel:  ArticlesViewModel(index: 3, text: "abc-news"), source: sampleSource1)
     }
 }
