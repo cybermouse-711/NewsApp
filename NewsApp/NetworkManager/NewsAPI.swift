@@ -194,6 +194,38 @@ final class NewsAPI {
         .eraseToAnyPublisher()
     }
     
+    // Асинхронная выборка источников информации с сообщениями об ошибках
+    func fetchSourcesError(for country: String) -> AnyPublisher<[Source], NewsError> {
+        Future<[Source], NewsError> { [unowned self] promise in
+            guard let url = Endpoint.sources(country: country).absoluteURL else {
+                return promise(.failure(.urlError(URLError(.unsupportedURL))))
+            }
+            self.fetchError(url)
+                .tryMap { (result: SourceResponse) -> [Source] in
+                    result.sources
+                }
+                .sink(
+                    receiveCompletion: { completion in
+                        if case let .failure(error) = completion {
+                            switch error {
+                            case let urlError as URLError:
+                                promise(.failure(.urlError(urlError)))
+                            case let decodingError as DecodingError:
+                                promise(.failure(.decodingError(decodingError)))
+                            case let apiError as NewsError:
+                                promise(.failure(apiError))
+                            default:
+                                promise(.failure(.genericError))
+                            }
+                        }
+                    },
+                    receiveValue: { promise(.success($0)) }
+                )
+                .store(in: &self.subscritions)
+        }
+        .eraseToAnyPublisher()
+    }
+    
     //Асинхронная выборка на основе URL с сообщениями об ошибках
     private func fetchError<T: Decodable>(_ url: URL) -> AnyPublisher<T, Error> {
         let urlSession = URLSession.shared.dataTaskPublisher(for: url)
